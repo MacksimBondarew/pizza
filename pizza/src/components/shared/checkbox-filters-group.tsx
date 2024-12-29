@@ -3,7 +3,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { FilterChecboxProps, FilterCheckbox } from "./filter-checkbox";
-import { Input } from "../ui";
+import { Input, Skeleton } from "../ui";
 
 type Item = FilterChecboxProps;
 
@@ -33,13 +33,38 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
     selected,
     name,
 }) => {
-    const [showAll, setShowAll] = React.useState(true);
+    const [showAll, setShowAll] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
-    const list = showAll ? items.filter((item) => item.text.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())) : defaultItems?.slice(0, limit);
+    const list = showAll
+        ? items.filter((item) =>
+            item.text
+                .toLocaleLowerCase()
+                .includes(searchValue.toLocaleLowerCase())
+        )
+        : defaultItems?.slice(0, limit);
+
+    if (loading) {
+        return (
+            <div className={className}>
+                <p className="font-bold mb-3">{title}</p>
+
+                {...Array(limit)
+                    .fill(0)
+                    .map((_, index) => (
+                        <Skeleton
+                            key={index}
+                            className="h-6 mb-4 rounded-[8px]"
+                        />
+                    ))}
+
+                <Skeleton className="w-28 h-6 mb-4 rounded-[8px]" />
+            </div>
+        );
+    }
 
     const onChangeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
-    }
+    };
 
     return (
         <div className={cn("", className)}>
