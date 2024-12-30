@@ -10,7 +10,7 @@ type Item = FilterChecboxProps;
 interface Props {
     title: string;
     items: Item[];
-    defaultItems: Item[];
+    defaultItems?: Item[];
     limit?: number;
     loading?: boolean;
     searchInputPlaceholder?: string;
@@ -41,7 +41,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
                 .toLocaleLowerCase()
                 .includes(searchValue.toLocaleLowerCase())
         )
-        : defaultItems?.slice(0, limit);
+        : (defaultItems || items).slice(0, limit);
 
     if (loading) {
         return (
