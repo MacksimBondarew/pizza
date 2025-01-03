@@ -1,14 +1,25 @@
 import {
     Container,
     Filters,
-    ProductGroupList,
+    ProductsGroupList,
     TopBar,
 } from "@/components/shared";
+import { prisma } from "@/prisma/prisma-client";
 
-export default function Home() {
+export default async function Home() {
+    const categories = await prisma.category.findMany({
+        include: {
+            products: {
+                include: {
+                    ingredients: true,
+                    items: true,
+                },
+            },
+        },
+    });
     return (
         <>
-            <TopBar />
+            <TopBar categories={categories.filter((category) => category.products.length > 0)} />
             <Container className="pt-10 pb-14">
                 <div className="flex gap-[60px]">
                     {/* Filter */}
@@ -18,116 +29,17 @@ export default function Home() {
                     {/* Products list */}
                     <div className="flex-1 gap-8 flex flex-wrap">
                         <div className="flex flex-col gap-16">
-                            <ProductGroupList
-                                categoryId={1}
-                                title="Пицца"
-                                items={[
-                                    {
-                                        id: 1,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 2,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 3,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 4,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 5,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 6,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },                                  {
-                                        id: 7,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                ]}
-                            />
-                        </div>
-                        <div className="flex flex-col gap-16">
-                            <ProductGroupList
-                                categoryId={2}
-                                title="Комбо"
-                                items={[
-                                    {
-                                        id: 1,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 2,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 3,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 4,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 5,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                    {
-                                        id: 6,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },                                  {
-                                        id: 7,
-                                        name: "piza",
-                                        price: 321,
-                                        imageUrl: "https://media.dodostatic.com/image/r:292x292/11eee23f6e2e1634b8788fab140d56b7.avif",
-                                        ingredients: "piza pizza pizza",
-                                    },
-                                ]}
-                            />
+                            {categories.map(
+                                (category) =>
+                                    category.products.length > 0 && (
+                                        <ProductsGroupList
+                                            categoryId={category.id}
+                                            title={category.name}
+                                            key={category.name}
+                                            items={category.products}
+                                        />
+                                    )
+                            )}
                         </div>
                     </div>
                 </div>

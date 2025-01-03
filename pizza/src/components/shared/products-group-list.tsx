@@ -14,7 +14,7 @@ interface Props {
     listClassName?: string;
 }
 
-export const ProductGroupList: React.FC<Props> = ({
+export const ProductsGroupList: React.FC<Props> = ({
     title,
     items,
     listClassName,

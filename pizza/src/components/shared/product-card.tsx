@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Title } from './index';
+import { Title } from "./index";
 import { Button } from "../ui";
 import { Plus } from "lucide-react";
 
@@ -10,7 +10,7 @@ interface Props {
     name: string;
     price: number;
     imageUrl: string;
-    ingredients: string;
+    ingredients: Array<string | { name: string }>;
     className?: string;
 }
 
@@ -20,7 +20,7 @@ export const ProductCard: React.FC<Props> = ({
     price,
     imageUrl,
     className,
-    ingredients
+    ingredients,
 }) => {
     return (
         <div className={cn("", className)}>
@@ -34,8 +34,17 @@ export const ProductCard: React.FC<Props> = ({
                 </div>
                 <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
                 <p className="text-sm text-gray-400">
-                    {ingredients}
+                    {Array.isArray(ingredients)
+                        ? ingredients
+                              .map((ingredient) =>
+                                  typeof ingredient === "string"
+                                      ? ingredient
+                                      : ingredient.name
+                              )
+                              .join(", ")
+                        : ingredients}
                 </p>
+
                 <div className="flex justify-between items-center mt-4">
                     <span className="text-[20px]">
                         от <b>{price} ₽</b>
