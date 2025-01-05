@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import { Header } from "@/components/shared/header";
+import { Header } from "@/shared/components/shared/header";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function HomeLayout({
     children,
-    modal
+    modal,
 }: Readonly<{
     children: React.ReactNode;
     modal: React.ReactNode;

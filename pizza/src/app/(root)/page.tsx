@@ -3,7 +3,7 @@ import {
     Filters,
     ProductsGroupList,
     TopBar,
-} from "@/components/shared";
+} from "@/shared/components/shared";
 import { prisma } from "@/prisma/prisma-client";
 
 export default async function Home() {
@@ -19,7 +19,11 @@ export default async function Home() {
     });
     return (
         <>
-            <TopBar categories={categories.filter((category) => category.products.length > 0)} />
+            <TopBar
+                categories={categories.filter(
+                    (category) => category.products.length > 0
+                )}
+            />
             <Container className="pt-10 pb-14">
                 <div className="flex gap-[60px]">
                     {/* Filter */}
