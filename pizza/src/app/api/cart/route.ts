@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
                                 product: true
                             }
                         },
-                        ingridients: true
+                        ingredients: true
                     },
                     
                 }

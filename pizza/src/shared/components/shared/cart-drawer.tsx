@@ -25,10 +25,14 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({
     children,
 }) => {
     const state = useCartStore((state) => state);
-    console.log(state.totalAmount);
     React.useEffect(() => {
         state.fetchCartItems();
     }, []);
+    const onClickCountButton = async (id: number, quantity: number, type: "plus" | "minus") => {
+        const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
+        console.log(id, newQuantity)
+        state.updateItemQuantity(id, newQuantity);
+    };
     return (
         <Sheet>
             <SheetTrigger asChild>{children}</SheetTrigger>
@@ -44,6 +48,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({
                             <CartDrawerItem
                                 id={item.id}
                                 imageUrl={item.imageUrl}
+                                onClickCountButton={(type) => onClickCountButton(item.id, item.quantity, type)}
                                 details={
                                     item.pizzaSize && item.pizzaType
                                         ? getCartItemDetails(
@@ -87,7 +92,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({
                                 // loading={redirecting}
                                 type="submit"
                                 className="w-full h-12 text-base">
-                                Оформить заказ
+                                    Оформить заказ
                                 <ArrowRight className="w-5 ml-2" />
                             </Button>
                         </Link>
