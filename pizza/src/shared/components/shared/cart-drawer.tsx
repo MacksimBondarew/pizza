@@ -1,3 +1,5 @@
+"use client";
+
 import {
     Sheet,
     SheetContent,
@@ -10,6 +12,10 @@ import { ArrowRight } from "lucide-react";
 import React from "react";
 import { Button } from "../ui";
 import Link from "next/link";
+import { useCartStore } from "@/shared/store/cart";
+import { PizzaSize, PizzaType } from "@/shared/constants/pizza";
+import { getCartItemDetails } from "@/shared/lib/get-cart-item-details";
+import { CartDrawerItem } from "./cart-drawer-item";
 
 interface Props {
     className?: string;
@@ -18,25 +24,60 @@ interface Props {
 export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({
     children,
 }) => {
+    const state = useCartStore((state) => state);
+    console.log(state.totalAmount);
+    React.useEffect(() => {
+        state.fetchCartItems();
+    }, []);
     return (
         <Sheet>
             <SheetTrigger asChild>{children}</SheetTrigger>
             <SheetContent className="flex flex-col justify-between pb-0 bg-[#f4f1ee]">
                 <SheetHeader>
                     <SheetTitle>
-                        В корзине <span className="font-bold">2 товара</span>
+                        В корзине <span className="font-bold">{state.items.length} товара</span>
                     </SheetTitle>
                 </SheetHeader>
+                <div className="-mx-6 mt-5 overflow-auto flex-1">
+                    {state.items.map((item) => (
+                        <div key={item.id} className="mb-2">
+                            <CartDrawerItem
+                                id={item.id}
+                                imageUrl={item.imageUrl}
+                                details={
+                                    item.pizzaSize && item.pizzaType
+                                        ? getCartItemDetails(
+                                            item.pizzaType as PizzaType,
+                                            item.pizzaSize as PizzaSize,
+                                            item.ingredients
+                                        )
+                                        : ""
+                                }
+                                disabled={item.disabled}
+                                name={item.name}
+                                price={item.price}
+                                quantity={item.quantity}
+                                // onClickCountButton={(type) =>
+                                //     onClickCountButton(
+                                //         item.id,
+                                //         item.quantity,
+                                //         type
+                                //     )
+                                // }
+                                // onClickRemove={() => removeCartItem(item.id)}
+                            />
+                        </div>
+                    ))}
+                </div>
                 <SheetFooter className="-mx-6 bg-white p-8">
                     <div className="w-full">
                         <div className="flex mb-4">
                             <span className="flex flex-1 text-lg text-neutral-500">
                                 Итого
-                                <div className="flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2" />
                             </span>
 
                             <span className="font-bold text-lg">
-                                3333333 ₽
+                                {state.totalAmount} ₽
                             </span>
                         </div>
 
