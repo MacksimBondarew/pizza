@@ -11,15 +11,19 @@ interface Props {
     name: string;
     loading?: boolean;
     className?: string;
+    onSubmit: VoidFunction;
+    price: number;
 }
 
 export const ChooseProductForm: React.FC<Props> = ({
     name,
     imageUrl,
     className,
+    onSubmit,
+    price,
+    loading
 }) => {
-    const textDetaills = "text description";
-    const totalPrice = "total price";
+
     return (
         <div className={cn(className, "flex flex-1")}>
             <div
@@ -41,10 +45,8 @@ export const ChooseProductForm: React.FC<Props> = ({
 
             <div className="w-[490px] bg-[#f7f6f5] p-7">
                 <Title text={name} size="md" className="font-extrabold mb-1" />
-
-                <p className="text-gray-400">{textDetaills}</p>
-                <Button className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
-                    Добавить в корзину за {totalPrice} ₽
+                <Button loading={loading} onClick={() => onSubmit()} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+                    Добавить в корзину за {price} ₽
                 </Button>
             </div>
         </div>

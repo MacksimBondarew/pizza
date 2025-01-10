@@ -6,11 +6,7 @@ import { Title } from "./title";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "../ui";
 import { GroupVariants, IngredientItem, ProductImage } from "./index";
-import {
-    PizzaSize,
-    PizzaType,
-    pizzaTypes,
-} from "@/shared/constants/pizza";
+import { PizzaSize, PizzaType, pizzaTypes } from "@/shared/constants/pizza";
 import { usePizzaOptions } from "@/shared/hooks/use-piiza-options";
 import { getPizzaDetails } from "@/shared/lib/get-pizza-details";
 
@@ -20,7 +16,7 @@ interface Props {
     items: ProductItem[];
     ingredients: Ingredient[];
     loading?: boolean;
-    onSubmit?: (itemId: number, ingredients: number[]) => void;
+    onSubmit: (itemId: number, ingredients: number[]) => void;
     className?: string;
 }
 
@@ -29,11 +25,32 @@ export const ChoosePizzaForm: React.FC<Props> = ({
     imageUrl,
     className,
     ingredients,
-    // onSubmit,
+    onSubmit,
     items,
+    loading,
 }) => {
-    const {  size, type, setSize, setType, selectedIngridients, toggleIngredients, avaliableSizes} = usePizzaOptions(items);
-    const { totalPrice, textDetaills } = getPizzaDetails(type, size, items, ingredients, selectedIngridients)
+    const {
+        size,
+        type,
+        setSize,
+        setType,
+        selectedIngridients,
+        toggleIngredients,
+        avaliableSizes,
+        currentItemId,
+    } = usePizzaOptions(items);
+    const { totalPrice, textDetaills } = getPizzaDetails(
+        type,
+        size,
+        items,
+        ingredients,
+        selectedIngridients
+    );
+    const handleClickAdd = () => {
+        if (currentItemId) {
+            onSubmit(currentItemId, Array.from(selectedIngridients));
+        }
+    };
     return (
         <div className={cn(className, "flex flex-1")}>
             <div
@@ -75,11 +92,10 @@ export const ChoosePizzaForm: React.FC<Props> = ({
                     </div>
                 </div>
 
-                <Button className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+                <Button loading={loading} onClick={handleClickAdd} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
                     Добавить в корзину за {totalPrice} ₽
                 </Button>
             </div>
         </div>
     );
 };
-

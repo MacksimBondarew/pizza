@@ -3,10 +3,12 @@ import { prisma } from "@/prisma/prisma-client";
 import { notFound } from "next/navigation";
 
 export default async function ProductModalPage({
-    params: { id },
+    params,
 }: {
     params: { id: string };
 }) {
+    const id = await params.id;
+
     const product = await prisma.product.findFirst({
         where: {
             id: Number(id),
@@ -16,6 +18,7 @@ export default async function ProductModalPage({
             items: true,
         },
     });
+
     if (!product) {
         return notFound();
     }

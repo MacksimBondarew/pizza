@@ -32,10 +32,7 @@ export const useFilters = (): ReturnProps => {
         priceTo: Number(searchParams.get("priceTo")) || 1000,
     });
     const updatePrice = (name: keyof PriceProps, value: number) => {
-        setPrices((prev) => ({
-            ...prev,
-            [name]: value
-        }))
+        setPrices((prev) => ({ ...prev, [name]: value }));
     };
     const [selectedIngredients, { toggle: toggleIngredients }] = useSet(
         new Set<string>(searchParams.get('ingredients')?.split(','))

@@ -45,3 +45,45 @@ export async function PATCH(
         );
     }
 }
+
+export async function DELETE(
+    req: NextRequest,
+    { params }: { params: { id: string } }
+) {
+    try {
+        const token = req.cookies.get("cartToken")?.value;
+
+        if (!token) {
+            return NextResponse.json({ error: "Cart token not found" });
+        }
+
+        // Await the params before using them
+        const id = await params.id;
+
+        const cartItem = await prisma.cartItem.findFirst({
+            where: {
+                id: Number(id),
+            },
+        });
+
+        if (!cartItem) {
+            return NextResponse.json({ error: "Cart item not found" });
+        }
+
+        await prisma.cartItem.delete({
+            where: {
+                id: Number(id),
+            },
+        });
+
+        const updatedUserCart = await updateCartTotalAmount(token);
+
+        return NextResponse.json(updatedUserCart);
+    } catch (error) {
+        console.log("[CART_DELETE] Server error", error);
+        return NextResponse.json(
+            { message: "Не удалось удалить корзину" },
+            { status: 500 }
+        );
+    }
+}
