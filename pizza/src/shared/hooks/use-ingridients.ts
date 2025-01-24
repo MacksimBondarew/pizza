@@ -7,7 +7,7 @@ interface ReturnProps {
     loading: boolean;
 }
 
-export const useIngridients = (): ReturnProps => {
+export const useIngredients = (): ReturnProps => {
     const [ingredients, setIngridients] = React.useState<Ingredient[]>([]);
     const [loading, setLoading] = React.useState(true);
     React.useEffect(() => {

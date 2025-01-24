@@ -1,32 +1,36 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/shared/lib/utils";
+import { Title } from "./title";
 import { Input } from "../ui";
-import { RangeSlider, CheckboxFiltersGroup, Title } from "./index";
-import { useFilters, useIngridients, useQueryFilters } from "@/shared/hooks";
+import { RangeSlider } from "./range-slider";
+import { CheckboxFiltersGroup } from "./checkbox-filters-group";
+import { useQueryFilters, useIngredients, useFilters } from "@/shared/hooks";
 
 interface Props {
     className?: string;
 }
 
 export const Filters: React.FC<Props> = ({ className }) => {
-    const { ingredients, loading } = useIngridients();
+    const { ingredients, loading } = useIngredients();
     const filters = useFilters();
     useQueryFilters(filters);
+
     const items = ingredients.map((item) => ({
-        id: String(item.id),
-        text: item.name,
         value: String(item.id),
+        text: item.name,
     }));
+
     const updatePrices = (prices: number[]) => {
         filters.setPrices("priceFrom", prices[0]);
         filters.setPrices("priceTo", prices[1]);
     };
+
     return (
-        <div className={cn("", className)}>
+        <div className={className}>
             <Title text="Фильтрация" size="sm" className="mb-5 font-bold" />
-            {/* Top checkbox */}
+
+            {/* Верхние чекбоксы */}
             <CheckboxFiltersGroup
                 title="Тип теста"
                 name="pizzaTypes"
@@ -38,9 +42,10 @@ export const Filters: React.FC<Props> = ({ className }) => {
                     { text: "Традиционное", value: "2" },
                 ]}
             />
+
             <CheckboxFiltersGroup
-                title="Тип теста"
-                name="pizzaTypes"
+                title="Размеры"
+                name="sizes"
                 className="mb-5"
                 onClickCheckbox={filters.setSizes}
                 selected={filters.sizes}
@@ -50,13 +55,16 @@ export const Filters: React.FC<Props> = ({ className }) => {
                     { text: "40 см", value: "40" },
                 ]}
             />
-            {/* Filter price */}
-            <div className="mt-5 border-y border-y-neutral-100 pt-6 pb-7">
+
+            {/* Фильтр цен */}
+            <div className="mt-5 border-y border-y-neutral-100 py-6 pb-7">
                 <p className="font-bold mb-3">Цена от и до:</p>
                 <div className="flex gap-3 mb-5">
                     <Input
                         type="number"
                         placeholder="0"
+                        min={0}
+                        max={1000}
                         value={String(filters.prices.priceFrom)}
                         onChange={(e) =>
                             filters.setPrices(
@@ -64,30 +72,34 @@ export const Filters: React.FC<Props> = ({ className }) => {
                                 Number(e.target.value)
                             )
                         }
-                        min={0}
-                        max={1000}
                     />
                     <Input
                         type="number"
                         min={100}
-                        value={String(filters.prices.priceTo)}
                         max={1000}
                         placeholder="1000"
+                        value={String(filters.prices.priceTo)}
                         onChange={(e) =>
                             filters.setPrices("priceTo", Number(e.target.value))
                         }
                     />
                 </div>
+
                 <RangeSlider
                     min={0}
                     max={1000}
                     step={10}
+                    value={[
+                        filters.prices.priceFrom || 0,
+                        filters.prices.priceTo || 1000,
+                    ]}
                     onValueChange={updatePrices}
-                    value={[filters.prices.priceFrom, filters.prices.priceTo]}
                 />
             </div>
+
             <CheckboxFiltersGroup
-                title="Ингредиенты:"
+                title="Ингредиенты"
+                name="ingredients"
                 className="mt-5"
                 limit={6}
                 defaultItems={items.slice(0, 6)}

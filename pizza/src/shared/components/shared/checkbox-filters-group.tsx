@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { cn } from "@/shared/lib/utils";
 import { FilterChecboxProps, FilterCheckbox } from "./filter-checkbox";
-import { Input, Skeleton } from "../ui";
+import { Input } from "../ui/input";
+import { Skeleton } from "../ui";
 
 type Item = FilterChecboxProps;
 
@@ -35,13 +35,10 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
 }) => {
     const [showAll, setShowAll] = React.useState(false);
     const [searchValue, setSearchValue] = React.useState("");
-    const list = showAll
-        ? items.filter((item) =>
-              item.text
-                  .toLocaleLowerCase()
-                  .includes(searchValue.toLocaleLowerCase())
-          )
-        : (defaultItems || items).slice(0, limit);
+
+    const onChangeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(e.target.value);
+    };
 
     if (loading) {
         return (
@@ -62,13 +59,16 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
         );
     }
 
-    const onChangeSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchValue(e.target.value);
-    };
+    const list = showAll
+        ? items.filter((item) =>
+              item.text.toLowerCase().includes(searchValue.toLocaleLowerCase())
+          )
+        : (defaultItems || items).slice(0, limit);
 
     return (
-        <div className={cn("", className)}>
+        <div className={className}>
             <p className="font-bold mb-3">{title}</p>
+
             {showAll && (
                 <div className="mb-5">
                     <Input
@@ -78,6 +78,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
                     />
                 </div>
             )}
+
             <div className="flex flex-col gap-4 max-h-96 pr-2 overflow-auto scrollbar">
                 {list.map((item, index) => (
                     <FilterCheckbox
@@ -91,6 +92,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
                     />
                 ))}
             </div>
+
             {items.length > limit && (
                 <div
                     className={

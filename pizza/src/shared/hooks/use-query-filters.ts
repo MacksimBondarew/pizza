@@ -4,19 +4,39 @@ import qs from "qs";
 import { useRouter } from "next/navigation";
 
 export const useQueryFilters = (filters: Filters) => {
-        const router = useRouter()
-        React.useEffect(() => {
-        const params = {
-            ...filters.prices,
-            pizzaTypes: Array.from(filters.pizzaTypes),
-            sizes: Array.from(filters.sizes),
-            ingredients: Array.from(filters.selectedIngredients),
-        };
-        const queryString = qs.stringify(params, {
-            arrayFormat: "comma",
-        });
-        router.push(`?${queryString}`, {
-            scroll: false,
-        });
-    }, [filters.pizzaTypes, filters.prices, filters.selectedIngredients, filters.sizes, router]);
+    const isMounted = React.useRef(false);
+    const router = useRouter();
+
+    React.useEffect(() => {
+        if (isMounted.current) {
+            const params = {
+                ...filters.prices,
+                pizzaTypes:
+                    filters.pizzaTypes.size > 0
+                        ? Array.from(filters.pizzaTypes).join(",")
+                        : undefined,
+                sizes:
+                    filters.sizes.size > 0
+                        ? Array.from(filters.sizes).join(",")
+                        : undefined,
+                selectedIngredients:
+                    filters.selectedIngredients.size > 0
+                        ? Array.from(filters.selectedIngredients).join(",")
+                        : undefined,
+            };
+
+            const query = qs.stringify(params, {
+                encode: false, 
+                skipNulls: true, 
+            });
+
+            console.log("Формований запит:", query);
+
+            router.push(`?${query}`, {
+                scroll: false,
+            });
+        } else {
+            isMounted.current = true;
+        }
+    }, [filters, router]);
 };
