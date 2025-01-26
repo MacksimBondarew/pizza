@@ -15,10 +15,13 @@ import toast from "react-hot-toast";
 import { CheckoutPersonalForm } from "@/shared/components/shared/checkout/checkout-personal-form";
 import { CheckoutAddressForm } from "@/shared/components/shared/checkout/checkout-adress-form";
 import { createOrder } from "@/app/actions";
+import { Api } from "@/shared/services/api-client";
+import { useSession } from "next-auth/react";
 
 export default function CheckOutPage() {
     const state = useCart();
     const [submitting, setSubmitting] = React.useState(false);
+    const { data: session } = useSession();
     const form = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutFormSchema),
         defaultValues: {
@@ -30,6 +33,22 @@ export default function CheckOutPage() {
             comment: "",
         },
     });
+
+    React.useEffect(() => {
+        async function fetchUserInfo() {
+            const data = await Api.auth.getMe();
+            const [firstName, lastName] = data.fullName.split(" ");
+
+            form.setValue("firstName", firstName);
+            form.setValue("lastName", lastName);
+            form.setValue("email", data.email);
+        }
+
+        if (session) {
+            fetchUserInfo();
+        }
+    }, [session]);
+
     const onClickCountButton = (
         id: number,
         quantity: number,

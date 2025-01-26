@@ -106,7 +106,7 @@ model CartItem {
     productItem   ProductItem @relation(fields: [productItemId], references: [id])
     productItemId Int
 
-    quantity    Int @default(1)
+    quantity    Int          @default(1)
     ingredients Ingredient[]
 
     createdAt DateTime @default(now())
@@ -159,4 +159,24 @@ enum OrderStatus {
 enum UserRole {
     USER
     ADMIN
+}
+
+model Story {
+    id              Int    @id @default(autoincrement())
+    previewImageUrl String
+
+    items StoryItem[]
+
+    createdAt DateTime @default(now())
+}
+
+model StoryItem {
+    id Int @id @default(autoincrement())
+
+    storyId Int
+    story   Story @relation(fields: [storyId], references: [id])
+
+    sourceUrl String
+
+    createdAt DateTime @default(now())
 }
