@@ -7,11 +7,17 @@ export default async function ProductModalPage({
 }: {
     params: { id: string };
 }) {
-    const id = await params.id;
+    // Convert params.id to a number directly
+    const id = Number(params.id);
 
+    if (isNaN(id)) {
+        return notFound(); // Handle invalid ID gracefully
+    }
+
+    // Query the database for the product
     const product = await prisma.product.findFirst({
         where: {
-            id: Number(id),
+            id,
         },
         include: {
             ingredients: true,

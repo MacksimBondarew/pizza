@@ -43,6 +43,7 @@ export const RegisterForm: React.FC<Props> = ({ onClose }) => {
             return toast.error("Неверный E-Mail или пароль", {
                 icon: "❌",
             });
+            console.log(error)
         }
     };
 

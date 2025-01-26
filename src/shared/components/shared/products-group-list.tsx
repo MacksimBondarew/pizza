@@ -5,10 +5,11 @@ import { cn } from "@/shared/lib/utils";
 import { ProductCard, Title } from "./index";
 import { useIntersection } from "react-use";
 import { useCategoryStore } from "@/shared/store/category";
+import { ProductWithRelations } from "../../../../@types/prisma";
 
 interface Props {
     title: string;
-    items: any[];
+    items: ProductWithRelations[];
     categoryId: number;
     className?: string;
     listClassName?: string;
