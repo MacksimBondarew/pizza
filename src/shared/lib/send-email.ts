@@ -16,9 +16,7 @@ export const sendEmail = async (
     });
 
     if (error) {
-        console.log("тут помилка")
         throw error;
     }
-    console.log("email sended")
     return data;
 };

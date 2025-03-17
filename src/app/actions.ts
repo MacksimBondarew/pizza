@@ -14,7 +14,7 @@ import { cookies } from "next/headers";
 export async function createOrder(data: CheckoutFormValues) {
     try {
         const cookieStore = cookies();
-        const cartToken = cookieStore.get("cartToken")?.value;
+        const cartToken = (await cookieStore).get("cartToken")?.value;
 
         if (!cartToken) {
             throw new Error("Cart token not found");
@@ -105,6 +105,7 @@ export async function createOrder(data: CheckoutFormValues) {
         await sendEmail(
             data.email,
             "Next Pizza / Оплатите заказ #" + order.id,
+            // @ts-expect-error PayOrderTemplate
             PayOrderTemplate({
                 orderId: order.id,
                 totalAmount: order.totalAmount,
@@ -172,8 +173,6 @@ export async function registerUser(body: Prisma.UserCreateInput) {
             },
         });
 
-        console.log("User created successfully:", createdUser);
-
         const code = Math.floor(100000 + Math.random() * 900000).toString();
 
         await prisma.verificationCode.create({
@@ -182,17 +181,18 @@ export async function registerUser(body: Prisma.UserCreateInput) {
                 userId: createdUser.id,
             },
         });
-
-        console.log("Sending email with verification code");
         await sendEmail(
             createdUser.email,
             "Next Pizza / 📝 Подтверждение регистрации",
+        // @ts-expect-error VerificationUserTemplate
             VerificationUserTemplate({ code })
         );
 
         return { message: "User registered successfully" };
     } catch (err) {
+        // @ts-expect-error err.messege
         console.error("Error [REGISTER_USER]:", err.message || err);
+        // @ts-expect-error err.messege
         throw new Error(err.message || "Internal Server Error");
     }
 }

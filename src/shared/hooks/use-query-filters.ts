@@ -30,8 +30,6 @@ export const useQueryFilters = (filters: Filters) => {
                 skipNulls: true, 
             });
 
-            console.log("Формований запит:", query);
-
             router.push(`?${query}`, {
                 scroll: false,
             });

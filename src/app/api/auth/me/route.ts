@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
+// @ts-expect-error req and res
 export async function GET(req, res) {
     try {
         const user = await getServerSession(req, res, authOptions);

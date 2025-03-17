@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
             await sendEmail(
                 order.email,
                 "Ваш заказ успешно оформлен 🎉",
+                // @ts-expect-error OrderSuccessTemplate
                 OrderSuccessTemplate({ orderId: order.id, items })
             );
         } else {

@@ -5,19 +5,18 @@ import { notFound } from "next/navigation";
 export default async function ProductModalPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
-    // Convert params.id to a number directly
-    const id = Number(params.id);
+    const paramId = await params;
+    const idNumber = Number(paramId.id);
 
-    if (isNaN(id)) {
-        return notFound(); // Handle invalid ID gracefully
+    if (isNaN(idNumber)) {
+        return notFound();
     }
 
-    // Query the database for the product
     const product = await prisma.product.findFirst({
         where: {
-            id,
+            id: idNumber,
         },
         include: {
             ingredients: true,

@@ -36,7 +36,6 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({
         type: "plus" | "minus"
     ) => {
         const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
-        console.log(id, newQuantity);
         state.updateItemQuantity(id, newQuantity);
     };
     return (

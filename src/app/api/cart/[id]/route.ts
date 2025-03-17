@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const id = Number(params.id);
+        const id = Number((await params).id);
         const data = (await req.json()) as { quantity: number };
         const token = req.cookies.get("cartToken")?.value;
 
@@ -48,7 +48,7 @@ export async function PATCH(
 
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const token = req.cookies.get("cartToken")?.value;
@@ -58,7 +58,7 @@ export async function DELETE(
         }
 
         // Await the params before using them
-        const id = await params.id;
+        const id = (await params).id;
 
         const cartItem = await prisma.cartItem.findFirst({
             where: {

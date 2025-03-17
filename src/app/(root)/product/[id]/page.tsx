@@ -1,6 +1,4 @@
-import {
-    Container,
-} from "@/shared/components/shared";
+import { Container } from "@/shared/components/shared";
 import { prisma } from "@/prisma/prisma-client";
 import { notFound } from "next/navigation";
 import { ProductForm } from "@/shared/components/shared/modal/product-form";
@@ -12,10 +10,12 @@ type ProductPageProps = {
 };
 
 export default async function ProductPage({
-    params: { id },
-}: ProductPageProps) {
+    params,
+}: {
+    params: Promise<{ id: string }>;
+}) {
     const product = await prisma.product.findFirst({
-        where: { id: Number(id) },
+        where: { id: Number((await params).id) },
         include: {
             ingredients: true,
             category: {

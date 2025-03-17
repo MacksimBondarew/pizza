@@ -22,7 +22,6 @@ interface ReturnProps {
 }
 
 export const getCartDetails = (data: CartDTO): ReturnProps => {
-    console.log(data.items)
     const items = Array.isArray(data.items) ? data.items.map((item) => ({
         id: item.id,
         quantity: item.quantity,

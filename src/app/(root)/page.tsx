@@ -7,13 +7,17 @@ import {
 import { Suspense } from "react";
 import { findPizzas, GetSearchParams } from "@/shared/lib/find-pizzas";
 import { Stories } from "@/shared/components/shared/stories";
+import { cn } from "@/shared/lib/utils";
 
 export default async function Home({
     searchParams,
 }: {
-    searchParams: GetSearchParams;
+    searchParams: Promise<GetSearchParams>;
 }) {
-    const categories = await findPizzas(searchParams);
+    const categories = await findPizzas(await searchParams);
+    const hasProducts = categories.some(
+        (category) => category.products.length > 0
+    );
     return (
         <>
             <TopBar
@@ -32,17 +36,27 @@ export default async function Home({
                     </div>
                     {/* Products list */}
                     <div className="flex-1 gap-8 flex flex-wrap">
-                        <div className="flex flex-col gap-16">
-                            {categories.map(
-                                (category) =>
-                                    category.products.length > 0 && (
-                                        <ProductsGroupList
-                                            categoryId={category.id}
-                                            title={category.name}
-                                            key={category.name}
-                                            items={category.products}
-                                        />
-                                    )
+                        <div
+                            className={cn("flex flex-col gap-16", {
+                                "flex-row justify-center w-full": !hasProducts,
+                            })}>
+                            {hasProducts ? (
+                                categories.map(
+                                    (category) =>
+                                        category.products.length > 0 && (
+                                            <ProductsGroupList
+                                                categoryId={category.id}
+                                                title={category.name}
+                                                key={category.name}
+                                                items={category.products}
+                                            />
+                                        )
+                                )
+                            ) : (
+                                <p className="text-2xl text-center font-bold">
+                                    {" "}
+                                    Ничего не найдено
+                                </p>
                             )}
                         </div>
                     </div>
