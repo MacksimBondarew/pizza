@@ -11,7 +11,7 @@ export const VerificationUserTemplate: React.FC<Props> = ({ code }) => (
         </p>
 
         <p>
-            <a href={`${process.env.NEXT_PUBLIC_API_UR}/auth/verify?code=${code}`}>
+            <a href={`https://pizza-delivery-app-nu.vercel.app/api/auth/verify?code=${code}`}>
                 Подтвердить регистрацию
             </a>
         </p>
