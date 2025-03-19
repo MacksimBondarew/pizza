@@ -97,11 +97,12 @@ export async function createOrder(data: CheckoutFormValues) {
             },
             data: {
                 paymentId: paymentData.id,
+                status: OrderStatus.SUCCEEDED,
             },
         });
 
         const paymentUrl = paymentData.confirmation.confirmation_url;
-
+        
         await sendEmail(
             data.email,
             "Next Pizza / Оплатите заказ #" + order.id,
